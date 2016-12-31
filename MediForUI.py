@@ -1,20 +1,24 @@
-import sys
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from subprocess import call
+import sys, os
+#from PyQt5 import QtCore, QtGui, QtWidgets, QtGui
+from PyQt5.QtCore import *
+from PyQt5.QtGui import * #import QIcon, QPixmap
+from PyQt5.QtWidgets import *
+
+#from subprocess import call
 import pandas as pd
 import generate_Medifor_bn_model_7
 
+
 class mainClass(QWidget):
     def __init__(self, parent = None):
-        super(mainClass, self).__init__(parent)
-
+        super().__init__()
+        
         #Train the initial model
         self.myArray = generate_Medifor_bn_model_7.train_model()
         
         #Initilize all file paths as NA (nothing selected)
-        self.fname1 = str("")
+        self.fname1 = self.fname2 = self.fname3 = self.fname4 = self.fname5 = self.fname6 = self.fname7 = self.fname8 = self.fname9 = self.fname10 =str("")
+        '''
         self.fname2 = str("")
         self.fname3 = str("")
         self.fname4 = str("")
@@ -24,14 +28,13 @@ class mainClass(QWidget):
         self.fname8 = str("")
         self.fname9 = str("")
         self.fname10 =str("")
-
+        '''
         #This is the layout
         layout = QVBoxLayout(self)
-        
         #Add the two layouts for the scroll boxes
         imageLayout = QVBoxLayout()
         scoreLayout = QVBoxLayout()
-                                                                
+        
 		
         #Intro message
         self.instructionText = QLabel("Step 1: Select the heat maps from the file system, leave blank if no values\nStep 2: Once the heat maps are loaded, select the TA1 algorithm scores\nStep 3: Run inference \nStep 4: Edit the results in the text box, then save the file")
@@ -330,17 +333,25 @@ class mainClass(QWidget):
 
     def saveResults(self):
         #Open the desktop, let the user select file path to save file
-        fileName = QFileDialog.getSaveFileName(self, 'save your results','/Desktop/results',  selectedFilter='*.txt')
-        #Ensure has txt extention
-        fileName =  fileName+ ".txt"
+        fileName, _ = QFileDialog.getSaveFileName(self, 'save your results','inference_results',  'Text files (*.txt);;All files (*.*)', 'Text files (*.txt)')
+        
+        #Ensure has txt extention -- new safefilename so .txt option provided
+        #fileName =  fileName+ ".txt"
+        
+        #Error Catching
+        if(fileName=="" or fileName ==None):
+            return None
         
         #Create file, or open file
         output_file = open(fileName, "w")
+        
         #Text box contents moved to string
         tempText = self.resultsTextEditBox.toPlainText()
+        
         #Save string into file
         output_file.write(tempText)
         output_file.close()
+    
     
     def displayResults(self):
         #MediFor_inference_output.txt is where the calculations are saved, we open them to view/edit them
@@ -352,7 +363,7 @@ class mainClass(QWidget):
 
     def dialog(self):
         #Open file system and get file path and file name
-        temp = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.gif *png)")
+        temp, _ = QFileDialog.getOpenFileName(self, 'Open file', 'cos.path.dirname(__file__)',"Image files (*.jpg *.gif *png)")
         return temp
 
 
@@ -373,6 +384,7 @@ class mainClass(QWidget):
     def getHeatMap2(self):
         #Open file system to select image to processes
         self.fname2 = self.dialog()
+        print(self.fname2)
         if(self.fname2!=""):
             self.imageDisplay2.setPixmap(QPixmap(self.fname2).scaledToWidth(200))
         else:
@@ -452,10 +464,11 @@ class mainClass(QWidget):
         else:
             self.fname10 = ""
             self.imageDisplay10.setText("No Image Loaded")
-        
+
     
 		
 def main():
+    print("test")
     app = QApplication(sys.argv)
     ex = mainClass()
     ex.show()
