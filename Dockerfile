@@ -44,7 +44,7 @@ RUN export QT_X11_NO_MITSHM=1
 USER developer
 ENV HOME /home/developer
 
-ADD .
+ADD . .
 
 WORKDIR .
-CMD ["python", "MediForUI.py"]
+CMD ["python", "MediForUI.py"] 
