@@ -17,10 +17,15 @@ To view our Docker Page:
 https://hub.docker.com/r/mediforuo/mediforuota2/
 
 To Pull current project from Docker:
-docker pull mediforuo/mediforuota
+docker pull mediforuo/mediforuota2
+
+To Build current project from Docker:
+You shouldn't need to build the proect image, docker will do this once GitHub is updated.
 
 To Build and run current project from GitHub:
+
 ./build
+
 ./run
 
 To Run current project from docker, after pull:
