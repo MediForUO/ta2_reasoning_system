@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.06
 
 
 RUN apt-get update
