@@ -14,7 +14,7 @@ def process_runs(run_queue):
     return processing.process_runs_sequential(run_queue, process_run)
 
 def process_run(id, input, log):
-    import generate_Medifor_bn_model_9 as reasoning_system
+    import generate_Medifor_bn_model_10 as reasoning_system
     #The line below training the model can be omitted if the base bayesian network file is already in the working directory.
     #reasoning_system.train_model()
     
@@ -88,4 +88,8 @@ if __name__ == '__main__':
     }
     log = logging.getLogger(__name__)
     output = process_run(id, input, log)
+    #dictionary of results is output key are name of manipulation, value is another dictionary with another heatmap and confidence level
+    #[manipulation name]['heatmap'].data - will give actual image object - that will need to pass into a function for actual display image 
+    output['removal'].heatmap.data.show()
+    #so the output[removal][heamap].data is the same as image.jpg
     print(output)
