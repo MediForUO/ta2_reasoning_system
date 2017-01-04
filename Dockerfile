@@ -1,11 +1,13 @@
 FROM ubuntu:15.10
 
-RUN add-apt-repository ppa:fkrull/deadsnakes
-RUN add-apt-repository ppa:avsm/ppa
+
 RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN apt-get install -y make
 RUN apt-get install -y libexpat1-dev
+RUN add-apt-repository ppa:fkrull/deadsnakes
+RUN add-apt-repository ppa:avsm/ppa
+RUN apt-get update
 RUN apt install python3.4
 RUN apt-get install -y ocaml-4.02\* ocaml-native-compilers camlp4-extra opam
 RUN opam init
