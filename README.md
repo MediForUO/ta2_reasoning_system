@@ -1,10 +1,10 @@
-# ta2_reasoning_system
+#### ta2_reasoning_system
 
-#Short Description:
+###Short Description:
 
 Medifor, University of Oregon
 
-#Full Description:
+##Full Description:
 
 Medifor Project. Update GitHub for the Docker Image to auto build on the Docker Cloud.
 
