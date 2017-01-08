@@ -6,7 +6,16 @@ from PyQt5.QtWidgets import *
 
 #from subprocess import call
 import pandas as pd
-import generate_Medifor_bn_model_7
+import generate_Medifor_bn_model_10 as reasoning_system
+
+import io
+
+import numpy as np
+from scipy import ndimage
+from scipy.misc import imread, imsave
+
+from medifor import fileutil, processing
+from medifor.resources import Resource
 
 
 class mainClass(QWidget):
@@ -14,7 +23,7 @@ class mainClass(QWidget):
         super().__init__()
         
         #Train the initial model
-        self.myArray = generate_Medifor_bn_model_7.train_model()
+        #self.myArray = generate_Medifor_bn_model_10.train_model()
         
         #Initilize all file paths as NA (nothing selected)
         self.fname1 = self.fname2 = self.fname3 = self.fname4 = self.fname5 = self.fname6 = self.fname7 = self.fname8 = self.fname9 = self.fname10 =str("")
@@ -283,6 +292,7 @@ class mainClass(QWidget):
         self.loading.setText("Calculating........")
         
         #train_model()
+        '''
         NIST_rows = self.myArray[0]
         NIST_cols = self.myArray[1]
         NIST_df = self.myArray[2].copy()
@@ -292,8 +302,13 @@ class mainClass(QWidget):
         NIST_TA1_algorithms = self.myArray[6][:]
         NIST_base_bn_lines = self.myArray[7][:]
         node_dict = self.myArray[8].copy()
-        query_dict = self.myArray[9].copy()
+        '''
+        #query_dict = self.myArray[9].copy()
         
+        query_dict = {}
+        
+        query_dict['block01'] = {'heatmap': str(self.fname1), 'score': str(self.text1.text())}
+        '''
         query_dict['block01']['heatmap'] = str(self.fname1)
         query_dict['block02']['heatmap'] = str(self.fname2)
         query_dict['copymove01']['heatmap'] = str(self.fname3)
@@ -316,19 +331,44 @@ class mainClass(QWidget):
         query_dict['ela01']['score'] = str(self.text8.text())
         query_dict['noise01']['score'] = str(self.text9.text())
         query_dict['noise02']['score'] = str(self.text10.text())
+        '''
+        #Input for inference
+        input = {}
 
+        for algorithm in query_dict.keys():
+            flag = False
+            if((query_dict[algorithm]['heatmap']) != ""):
+                heatmap_object = imread(query_dict[algorithm]['heatmap'])
+                heatmap_resource = Resource('image',heatmap,'image/png')
+                flag = True
+            print (query_dict[algorithm]['score'])
+            input[algorithm] = {}
+            if(flag):
+                input[algorithm]['heatmap'] = heatmap_resource
+            input['score'] = query_dict[algorithm]['score']
+                #input[algorithm] = {'score': query_dict[algorithm]['score'], 'heatmap': heatmap_resource}
+        
+        #Path to original image will be user selected main image
+        image_object = imread(path_to_original_image)
+        
+        input['image'] = Resource('image', image_object, 'image/jpeg')
+        input['algorithms'] = ['block01', 'block02', 'copymove01', 'dct01', 'dct02', 'dct03_A', 'dct03_NA', 'ela01', 'noise01', 'noise02']
         #print query_dict
         
         #Try to call inference
         try:
             self.loading.setText("Calculating........")
-            generate_Medifor_bn_model_7.run_inference(NIST_rows,NIST_cols , NIST_df,NIST_regional_manips, NIST_global_manips, NIST_manip_schema_dict, NIST_TA1_algorithms, NIST_base_bn_lines,node_dict,query_dict)
-            self.loading.setText("Done")
+            mydict = reasoning_system.run_inference(input)
+            
         #Else catch error
         except ValueError:
             self.loading.setText("Failed due to score value, please check values.")
             #except:
         #self.loading.setText("Failed Inference, please check inputs, ensure proper heat maps and proper score values.")
+
+        self.loading.setText("Done")
+        
+        print (mydict)
 
 
     def saveResults(self):
