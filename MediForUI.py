@@ -27,17 +27,7 @@ class mainClass(QWidget):
         
         #Initilize all file paths as NA (nothing selected)
         self.fname1 = self.fname2 = self.fname3 = self.fname4 = self.fname5 = self.fname6 = self.fname7 = self.fname8 = self.fname9 = self.fname10 =str("")
-        '''
-        self.fname2 = str("")
-        self.fname3 = str("")
-        self.fname4 = str("")
-        self.fname5 = str("")
-        self.fname6 = str("")
-        self.fname7 = str("")
-        self.fname8 = str("")
-        self.fname9 = str("")
-        self.fname10 =str("")
-        '''
+        self.fname0="nan"
         #This is the layout
         layout = QVBoxLayout(self)
         #Add the two layouts for the scroll boxes
@@ -49,9 +39,15 @@ class mainClass(QWidget):
         self.instructionText = QLabel("Step 1: Select the heat maps from the file system, leave blank if no values\nStep 2: Once the heat maps are loaded, select the TA1 algorithm scores\nStep 3: Run inference \nStep 4: Edit the results in the text box, then save the file")
         layout.addWidget(self.instructionText)
       
-      
+        self.selectOriginalImageButton = QPushButton("Select Original Image")
+        self.selectOriginalImageButton.setMaximumWidth(200)
+        self.selectOriginalImageButton.clicked.connect(self.getOriginalImage)
+        layout.addWidget(self.selectOriginalImageButton)
+        self.imageDisplay0 = QLabel("No Image Loaded")
+        layout.addWidget(self.imageDisplay0)
+
         #Header for heap maps
-        self.headerHeatMaps = QLabel("\nSelect the heat map in the directory")
+        self.headerHeatMaps = QLabel("\nSelect the heat map(s) in the directory")
         self.headerHeatMaps.setAlignment(Qt.AlignCenter)
         imageLayout.addWidget(self.headerHeatMaps)
           
@@ -349,26 +345,25 @@ class mainClass(QWidget):
                 #input[algorithm] = {'score': query_dict[algorithm]['score'], 'heatmap': heatmap_resource}
         
         #Path to original image will be user selected main image
-        image_object = imread(path_to_original_image)
-        
-        input['image'] = Resource('image', image_object, 'image/jpeg')
-        input['algorithms'] = ['block01', 'block02', 'copymove01', 'dct01', 'dct02', 'dct03_A', 'dct03_NA', 'ela01', 'noise01', 'noise02']
-        #print query_dict
-        
-        #Try to call inference
-        try:
-            self.loading.setText("Calculating........")
-            mydict = reasoning_system.run_inference(input)
-            
-        #Else catch error
-        except ValueError:
-            self.loading.setText("Failed due to score value, please check values.")
-            #except:
-        #self.loading.setText("Failed Inference, please check inputs, ensure proper heat maps and proper score values.")
-
-        self.loading.setText("Done")
-        
-        print (mydict)
+        if(self.fname0 == "nan"):
+            self.loading.setText("Must Select original Image !!!!")
+            print(self.fname0)
+        else:
+            image_object = imread(self.fname0)
+            input['image'] = Resource('image', image_object, 'image/jpeg')
+            input['algorithms'] = ['block01', 'block02', 'copymove01', 'dct01', 'dct02', 'dct03_A', 'dct03_NA', 'ela01', 'noise01', 'noise02']
+            #print query_dict
+            #Try to call inference
+            try:
+                self.loading.setText("Calculating........")
+                mydict = reasoning_system.run_inference(input)
+            #Else catch error
+            except ValueError:
+                self.loading.setText("Failed due to score value, please check values.")
+                #except:
+                #self.loading.setText("Failed Inference, please check inputs, ensure proper heat maps and proper score values.")
+            self.loading.setText("Done")
+            print (mydict)
 
 
     def saveResults(self):
@@ -412,6 +407,18 @@ class mainClass(QWidget):
     # Each heat map has its own function. This way class variables can be accessed
     #
     #
+    
+    
+    
+    def getOriginalImage(self):
+        #Open file system to select image to processes
+        self.fname0 = self.dialog()
+        if(self.fname0!=""):
+            self.imageDisplay0.setPixmap(QPixmap(self.fname0).scaledToWidth(200))
+        else:
+            self.fname0 = "nan"
+            self.imageDisplay0.setText("No Image Loaded")
+    
     def getHeatMap1(self):
 		#Open file system to select image to processes
         self.fname1 = self.dialog()
