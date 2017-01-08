@@ -1,37 +1,40 @@
-# ta2_reasoning_system
+### ta2_reasoning_system
 
-Short Description:
+###Short Description:
 
 Medifor, University of Oregon
 
-Full Description:
+###Full Description:
 
 Medifor Project. Update GitHub for the Docker Image to auto build on the Docker Cloud.
 
-GitHub page:
+###GitHub page:
 
 https://github.com/MediForUO/ta2_reasoning_system
 
-To view our Docker Page:
+Our Docker Page:
 
 https://hub.docker.com/r/mediforuo/mediforuota2/
 
-To Pull current project from Docker:
+###Pull current image from Docker:
 
 docker pull mediforuo/mediforuota2
 
-To Build current project from Docker:
+###Run current image from docker:
 
-You shouldn't need to build the proect image, docker will do this once GitHub is updated.
+Step1: Pull latest docker image: docker pull mediforuo/mediforuota2
 
-To Build and run current project from GitHub:
+Step2: Run docker image:  docker run -ti --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY mediforuo/mediforuota2
+
+###Build and Run current project from GitHub 
+(uses docker to build new image):
 
 ./build
 
 ./run
 
-To Run current project from docker, after pull:
+###To Run the program locally:
 
-docker run -ti --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY mediforuo/mediforuota2
+Step1: Install all dependencies: https://github.com/MediForUO/ta2_reasoning_system/blob/master/install_dependencies.txt
 
-
+Step2: python3 MediForUI.py
