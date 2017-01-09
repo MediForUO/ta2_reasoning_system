@@ -3,6 +3,8 @@ import sys, os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import * #import QIcon, QPixmap
 from PyQt5.QtWidgets import *
+from PIL import Image
+from PIL.ImageQt import ImageQt
 
 #from subprocess import call
 import pandas as pd
@@ -22,6 +24,7 @@ class mainClass(QWidget):
     def __init__(self, parent = None):
         super().__init__()
         
+        self.mydict = {}
         #Train the initial model
         #self.myArray = generate_Medifor_bn_model_10.train_model()
         
@@ -33,6 +36,7 @@ class mainClass(QWidget):
         #Add the two layouts for the scroll boxes
         imageLayout = QVBoxLayout()
         scoreLayout = QVBoxLayout()
+        heatMapResultsLayout = QVBoxLayout()
         
 		
         #Intro message
@@ -46,7 +50,23 @@ class mainClass(QWidget):
         self.imageDisplay0 = QLabel("No Image Loaded")
         layout.addWidget(self.imageDisplay0)
 
-        #Header for heap maps
+
+        #Header for heap maps output
+        self.headerHeatMapsResults = QLabel("\nHeat Maps are posted below")
+        self.headerHeatMapsResults.setAlignment(Qt.AlignCenter)
+        heatMapResultsLayout.addWidget(self.headerHeatMapsResults)
+        
+        #Select Image Button / call for all heat maps
+        #Also all initial heat map set upts
+        self.displayHeatMapResult = QPushButton("Display Result")
+        self.displayHeatMapResult.setMaximumWidth(200)
+        self.displayHeatMapResult.clicked.connect(self.displayHeatMapResults)
+        heatMapResultsLayout.addWidget(self.displayHeatMapResult)
+        self.heatmapDisaply1 = QLabel("No Image Loaded")
+        heatMapResultsLayout.addWidget(self.heatmapDisaply1)
+        
+        
+        #Header for heap maps input
         self.headerHeatMaps = QLabel("\nSelect the heat map(s) in the directory")
         self.headerHeatMaps.setAlignment(Qt.AlignCenter)
         imageLayout.addWidget(self.headerHeatMaps)
@@ -238,14 +258,15 @@ class mainClass(QWidget):
         #Make second group box, which is allowed to be scrolled
         mygroupbox2 = QGroupBox()
         mygroupbox2.setLayout(scoreLayout)
-        scroll = QScrollArea()
-        scroll.setWidget(mygroupbox2)
-        scroll.setWidgetResizable(True)
-        #scroll.setFixedHeight(700)
-        layout.addWidget(scroll)
+        scroll2 = QScrollArea()
+        scroll2.setWidget(mygroupbox2)
+        scroll2.setWidgetResizable(True)
+        #scroll2.setFixedHeight(700)
+        layout.addWidget(scroll2)
         
         
-      	#Inference Button / call
+        
+        
         self.runInferenceButton = QPushButton(" Inference")
         
         #Call inference
@@ -264,13 +285,26 @@ class mainClass(QWidget):
         self.displayResultsButton= QPushButton("Display Results")
         #Maybe auto load files later on from inference?
         self.displayResultsButton.clicked.connect(self.displayResults)
-            
+        
         #Add results button after text box
         layout.addWidget(self.displayResultsButton)
 
-      	#Display Results in a text Field	
+
+        #Display Results in a text Field
         self.resultsTextEditBox = QTextEdit()
         layout.addWidget(self.resultsTextEditBox)
+        
+        
+        mygroupbox3 = QGroupBox()
+        mygroupbox3.setLayout(heatMapResultsLayout)
+        scroll3 = QScrollArea()
+        scroll3.setWidget(mygroupbox3)
+        scroll3.setWidgetResizable(True)
+        #scroll.setFixedHeight(700)
+        layout.addWidget(scroll3)
+        #Inference Button / call
+        
+      
 
         #Add save results button after text box
         layout.addWidget(self.saveResultsButton)
@@ -356,14 +390,14 @@ class mainClass(QWidget):
             #Try to call inference
             try:
                 self.loading.setText("Calculating........")
-                mydict = reasoning_system.run_inference(input)
+                self.mydict = reasoning_system.run_inference(input)
             #Else catch error
             except ValueError:
                 self.loading.setText("Failed due to score value, please check values.")
                 #except:
                 #self.loading.setText("Failed Inference, please check inputs, ensure proper heat maps and proper score values.")
             self.loading.setText("Done")
-            print (mydict)
+            print (self.mydict)
 
 
     def saveResults(self):
@@ -390,11 +424,11 @@ class mainClass(QWidget):
     
     def displayResults(self):
         #MediFor_inference_output.txt is where the calculations are saved, we open them to view/edit them
-        results_file = open("MediFor_inference_output.txt", "r")
-        data=results_file.read()
-        
+        #results_file = open("MediFor_inference_output.txt", "r")
+        #data=results_file.read()
+        #print (data)
         #Set the text box to display results
-        self.resultsTextEditBox.setText(data)
+        self.resultsTextEditBox.setText("No longer used")
 
     def dialog(self):
         #Open file system and get file path and file name
@@ -408,6 +442,45 @@ class mainClass(QWidget):
     #
     #
     
+    def displayHeatMapResults(self):
+        imageq = ImageQt(self.mydict['copyclone'].heatmap.data) #convert PIL image to a PIL.ImageQt object
+        qimage = QImage(imageq)
+        pm=(QPixmap(qimage).scaledToWidth(200))
+        
+        #setPixmap(pm)
+        
+        self.heatmapDisaply1.setPixmap(pm)
+        #self.heatmapDisaply1.setPixmap(self.mydict['removal'].heatmap.data).scaledToWidth(200)
+        
+        print("Hello")
+        self.mydict['copyclone'].heatmap.data.show()
+        self.mydict['removal'].heatmap.data.show()
+        self.mydict['splice'].heatmap.data.show()
+        self.mydict['lighting'].heatmap.data.show()
+        print(self.mydict['copyclone'].heatmap.data)
+        print(self.mydict['removal'].heatmap.data)
+        print(self.mydict['splice'].heatmap.data)
+        print(self.mydict['lighting'].heatmap.data)
+        '''
+        {'removal': <generate_Medifor_bn_model_10.Manipulation object at 0x112f71ef0>, 
+        'lighting': <generate_Medifor_bn_model_10.Manipulation object at 0x112f71e10>, 
+        'splice': <generate_Medifor_bn_model_10.Manipulation object at 0x112f71e80>, 
+        'copyclone': <generate_Medifor_bn_model_10.Manipulation object at 0x112f71f60>}
+
+        '''
+   
+    ###
+    ##
+    ###
+    ##
+    ###
+    ##
+    ###
+    ##
+    ###
+    ##
+    ###
+    ##
     
     
     def getOriginalImage(self):
