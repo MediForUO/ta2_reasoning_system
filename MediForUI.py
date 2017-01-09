@@ -443,7 +443,7 @@ class mainClass(QWidget):
     #
     
     def displayHeatMapResults(self):
-        imageq = ImageQt(self.mydict['copyclone'].heatmap.data) #convert PIL image to a PIL.ImageQt object
+        imageq = ImageQt(self.mydict['removal'].heatmap.data) #convert PIL image to a PIL.ImageQt object
         qimage = QImage(imageq)
         pm=(QPixmap(qimage).scaledToWidth(200))
         
@@ -452,15 +452,17 @@ class mainClass(QWidget):
         self.heatmapDisaply1.setPixmap(pm)
         #self.heatmapDisaply1.setPixmap(self.mydict['removal'].heatmap.data).scaledToWidth(200)
         
-        print("Hello")
+        print(self.mydict)
         self.mydict['copyclone'].heatmap.data.show()
         self.mydict['removal'].heatmap.data.show()
         self.mydict['splice'].heatmap.data.show()
-        self.mydict['lighting'].heatmap.data.show()
+        #Lighting is global, will be fixed later
+        #self.mydict['lighting'].heatmap.data.show()
         print(self.mydict['copyclone'].heatmap.data)
         print(self.mydict['removal'].heatmap.data)
         print(self.mydict['splice'].heatmap.data)
-        print(self.mydict['lighting'].heatmap.data)
+        #Lighting is global, will be fixed later
+        #print(self.mydict['lighting'].heatmap.data)
         '''
         {'removal': <generate_Medifor_bn_model_10.Manipulation object at 0x112f71ef0>, 
         'lighting': <generate_Medifor_bn_model_10.Manipulation object at 0x112f71e10>, 
