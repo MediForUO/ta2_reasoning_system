@@ -338,6 +338,16 @@ class mainClass(QWidget):
         query_dict = {}
         
         query_dict['block01'] = {'heatmap': str(self.fname1), 'score': str(self.text1.text())}
+        query_dict['block02'] = {'heatmap': str(self.fname2), 'score': str(self.text2.text())}
+        query_dict['copymove01'] = {'heatmap': str(self.fname3), 'score': str(self.text3.text())}
+        query_dict['dct01'] = {'heatmap': str(self.fname4), 'score': str(self.text4.text())}
+        query_dict['dct02'] = {'heatmap': str(self.fname5), 'score': str(self.text5.text())}
+        query_dict['dct03_A'] = {'heatmap': str(self.fname6), 'score': str(self.text6.text())}
+        query_dict['dct01_NA'] = {'heatmap': str(self.fname7), 'score': str(self.text7.text())}
+        query_dict['ela01'] = {'heatmap': str(self.fname8), 'score': str(self.text8.text())}
+        query_dict['noise01'] = {'heatmap': str(self.fname9), 'score': str(self.text9.text())}
+        query_dict['noise02'] = {'heatmap': str(self.fname10), 'score': str(self.text10.text())}
+        
         '''
         query_dict['block01']['heatmap'] = str(self.fname1)
         query_dict['block02']['heatmap'] = str(self.fname2)
@@ -369,7 +379,7 @@ class mainClass(QWidget):
             flag = False
             if((query_dict[algorithm]['heatmap']) != ""):
                 heatmap_object = imread(query_dict[algorithm]['heatmap'])
-                heatmap_resource = Resource('image',heatmap,'image/png')
+                heatmap_resource = Resource('image',heatmap_object,'image/png')
                 flag = True
             print (query_dict[algorithm]['score'])
             input[algorithm] = {}
@@ -443,7 +453,8 @@ class mainClass(QWidget):
     #
     
     def displayHeatMapResults(self):
-        imageq = ImageQt(self.mydict['removal'].heatmap.data) #convert PIL image to a PIL.ImageQt object
+        print(self.mydict)
+        imageq = ImageQt(self.mydict['copyclone'].heatmap.data) #convert PIL image to a PIL.ImageQt object
         qimage = QImage(imageq)
         pm=(QPixmap(qimage).scaledToWidth(200))
         
@@ -452,7 +463,7 @@ class mainClass(QWidget):
         self.heatmapDisaply1.setPixmap(pm)
         #self.heatmapDisaply1.setPixmap(self.mydict['removal'].heatmap.data).scaledToWidth(200)
         
-        print(self.mydict)
+        #print(self.mydict)
         self.mydict['copyclone'].heatmap.data.show()
         self.mydict['removal'].heatmap.data.show()
         self.mydict['splice'].heatmap.data.show()
