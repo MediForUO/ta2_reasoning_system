@@ -24,7 +24,7 @@ class mainClass(QWidget):
     def __init__(self, parent = None):
         super().__init__()
         
-        self.mydict = {}
+        self.mydict = { }
         #Train the initial model
         #self.myArray = generate_Medifor_bn_model_10.train_model()
         
@@ -38,13 +38,15 @@ class mainClass(QWidget):
         scoreLayout = QVBoxLayout()
         heatMapResultsLayout = QVBoxLayout()
         
+        everythingLayout = QVBoxLayout()
+        
 		
         #Intro message
         self.instructionText = QLabel("Step 1: Select the heat maps from the file system, leave blank if no values\nStep 2: Once the heat maps are loaded, select the TA1 algorithm scores\nStep 3: Run inference \nStep 4: Edit the results in the text box, then save the file")
         layout.addWidget(self.instructionText)
       
         self.selectOriginalImageButton = QPushButton("Select Original Image")
-        self.selectOriginalImageButton.setMaximumWidth(200)
+        #self.selectOriginalImageButton.setMaximumWidth(200)
         self.selectOriginalImageButton.clicked.connect(self.getOriginalImage)
         layout.addWidget(self.selectOriginalImageButton)
         self.imageDisplay0 = QLabel("No Image Loaded")
@@ -54,16 +56,35 @@ class mainClass(QWidget):
         #Header for heap maps output
         self.headerHeatMapsResults = QLabel("\nHeat Maps are posted below")
         self.headerHeatMapsResults.setAlignment(Qt.AlignCenter)
-        heatMapResultsLayout.addWidget(self.headerHeatMapsResults)
+        layout.addWidget(self.headerHeatMapsResults)
         
         #Select Image Button / call for all heat maps
         #Also all initial heat map set upts
-        self.displayHeatMapResult = QPushButton("Display Result")
-        self.displayHeatMapResult.setMaximumWidth(200)
+        self.displayHeatMapResult = QPushButton("Display Results")
+        #self.displayHeatMapResult.setMaximumWidth(200)
+        #self.displayHeatMapResult.setAlignment(Qt.AlignCenter)
         self.displayHeatMapResult.clicked.connect(self.displayHeatMapResults)
-        heatMapResultsLayout.addWidget(self.displayHeatMapResult)
-        self.heatmapDisaply1 = QLabel("No Image Loaded")
+        
+        self.headerHeatMapsResults1 = QLabel("\ncopyclone confidence:")
+        self.headerHeatMapsResults1.setAlignment(Qt.AlignLeft)
+        heatMapResultsLayout.addWidget(self.headerHeatMapsResults1)
+        
+        self.heatmapDisaply1 = QLabel("No Image copyclone")
         heatMapResultsLayout.addWidget(self.heatmapDisaply1)
+        
+        self.headerHeatMapsResults2 = QLabel("\nremoval confidence:")
+        self.headerHeatMapsResults2.setAlignment(Qt.AlignLeft)
+        heatMapResultsLayout.addWidget(self.headerHeatMapsResults2)
+        
+        self.heatmapDisaply2 = QLabel("No Image removal")
+        heatMapResultsLayout.addWidget(self.heatmapDisaply2)
+        
+        self.headerHeatMapsResults3 = QLabel("\nHeat splice confidence:")
+        self.headerHeatMapsResults3.setAlignment(Qt.AlignLeft)
+        heatMapResultsLayout.addWidget(self.headerHeatMapsResults3)
+        
+        self.heatmapDisaply3 = QLabel("No Image splice")
+        heatMapResultsLayout.addWidget(self.heatmapDisaply3)
         
         
         #Header for heap maps input
@@ -147,10 +168,7 @@ class mainClass(QWidget):
         
         #End of heat map set ups
 
-        #Header for scores
-        self.headerScores = QLabel("\nEnter a float value for each score below, or NAN for unknown")
-        self.headerScores.setAlignment(Qt.AlignCenter)
-        scoreLayout.addWidget(self.headerScores)
+
 
         #set up for all the score text fields and names
         self.newline1 = QLabel("\nEnter the float for block01")
@@ -252,16 +270,24 @@ class mainClass(QWidget):
         scroll = QScrollArea()
         scroll.setWidget(mygroupbox)
         scroll.setWidgetResizable(True)
-        #scroll.setFixedHeight(700)
+        scroll.setFixedHeight(300)
         layout.addWidget(scroll)
 
+
+
+        #Header for scores
+        self.headerScores = QLabel("\nEnter a float value for each score below, or NAN for unknown")
+        self.headerScores.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.headerScores)
+        
+        
         #Make second group box, which is allowed to be scrolled
         mygroupbox2 = QGroupBox()
         mygroupbox2.setLayout(scoreLayout)
         scroll2 = QScrollArea()
         scroll2.setWidget(mygroupbox2)
         scroll2.setWidgetResizable(True)
-        #scroll2.setFixedHeight(700)
+        scroll2.setFixedHeight(300)
         layout.addWidget(scroll2)
         
         
@@ -278,7 +304,7 @@ class mainClass(QWidget):
         layout.addWidget(self.loading)
       		
         #Save Results Button - to save results to text file from text box
-        self.saveResultsButton = QPushButton("Save Results")
+        self.saveResultsButton = QPushButton("Save Confidence Scores")
         self.saveResultsButton.clicked.connect(self.saveResults)
 		
         #Disaply Results in text box
@@ -294,24 +320,42 @@ class mainClass(QWidget):
         self.resultsTextEditBox = QTextEdit()
         layout.addWidget(self.resultsTextEditBox)
         
+        #Add save results button after text box
+        layout.addWidget(self.saveResultsButton)
+        
+        ##Add results button
+        layout.addWidget(self.displayHeatMapResult)
+        
         
         mygroupbox3 = QGroupBox()
         mygroupbox3.setLayout(heatMapResultsLayout)
         scroll3 = QScrollArea()
         scroll3.setWidget(mygroupbox3)
         scroll3.setWidgetResizable(True)
-        #scroll.setFixedHeight(700)
+        scroll3.setFixedHeight(300)
         layout.addWidget(scroll3)
         #Inference Button / call
         
       
+      
 
-        #Add save results button after text box
-        layout.addWidget(self.saveResultsButton)
+
 		
         
         #Add layout and widgets to window , set window size, name window
         self.setLayout(layout)
+        
+        mygroupbox4 = QGroupBox()
+        mygroupbox4.setLayout(layout)
+        scroll4 = QScrollArea()
+        scroll4.setWidget(mygroupbox4)
+        scroll4.setWidgetResizable(True)
+        #scroll.setFixedHeight(800)
+        everythingLayout.addWidget(scroll4)
+        #Inference Button / call
+        
+        
+        self.setLayout(everythingLayout)
         #Width,Height
         self.setMinimumSize(650, 700)
         self.setWindowTitle("MediFor reasoning")
@@ -438,7 +482,8 @@ class mainClass(QWidget):
         #data=results_file.read()
         #print (data)
         #Set the text box to display results
-        self.resultsTextEditBox.setText("No longer used")
+        for key in self.mydict.keys():
+            self.resultsTextEditBox.setText( key + " " + str(self.mydict[key].confidence)+ "\n" + self.resultsTextEditBox.toPlainText() )
 
     def dialog(self):
         #Open file system and get file path and file name
@@ -453,25 +498,40 @@ class mainClass(QWidget):
     #
     
     def displayHeatMapResults(self):
-        print(self.mydict)
-        imageq = ImageQt(self.mydict['copyclone'].heatmap.data) #convert PIL image to a PIL.ImageQt object
-        qimage = QImage(imageq)
-        pm=(QPixmap(qimage).scaledToWidth(200))
+        #print(self.mydict)
+        try:
+            imageq = ImageQt(self.mydict['copyclone'].heatmap.data) #convert PIL image to a PIL.ImageQt object
+            qimage = QImage(imageq)
+            pm=(QPixmap(qimage).scaledToWidth(200))
+            self.heatmapDisaply1.setPixmap(pm)
+        except:
+            self.heatmapDisaply1.setText("Copyclone results not detected")
+
+        try:
+            imageq2 = ImageQt(self.mydict['removal'].heatmap.data) #convert PIL image to a PIL.ImageQt object
+            qimage2 = QImage(imageq)
+            pm2=(QPixmap(qimage2).scaledToWidth(200))
+            self.heatmapDisaply2.setPixmap(pm2)
+        except:
+            self.heatmapDisaply2.setText("Removal results not detected")
         
-        #setPixmap(pm)
-        
-        self.heatmapDisaply1.setPixmap(pm)
-        #self.heatmapDisaply1.setPixmap(self.mydict['removal'].heatmap.data).scaledToWidth(200)
+        try:
+            imageq3 = ImageQt(self.mydict['splice'].heatmap.data) #convert PIL image to a PIL.ImageQt object
+            qimage3 = QImage(imageq3)
+            pm3=(QPixmap(qimage3).scaledToWidth(200))
+            self.heatmapDisaply3.setPixmap(pm3)
+        except:
+            self.heatmapDisaply3.setText("Splice results not detected")
         
         #print(self.mydict)
-        self.mydict['copyclone'].heatmap.data.show()
-        self.mydict['removal'].heatmap.data.show()
-        self.mydict['splice'].heatmap.data.show()
+        #self.mydict['copyclone'].heatmap.data.show()
+        #self.mydict['removal'].heatmap.data.show()
+        #self.mydict['splice'].heatmap.data.show()
         #Lighting is global, will be fixed later
         #self.mydict['lighting'].heatmap.data.show()
-        print(self.mydict['copyclone'].heatmap.data)
-        print(self.mydict['removal'].heatmap.data)
-        print(self.mydict['splice'].heatmap.data)
+        #print(self.mydict['copyclone'].heatmap.data)
+        #print(self.mydict['removal'].heatmap.data)
+        #print(self.mydict['splice'].heatmap.data)
         #Lighting is global, will be fixed later
         #print(self.mydict['lighting'].heatmap.data)
         '''
