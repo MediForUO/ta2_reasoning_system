@@ -482,6 +482,7 @@ class mainClass(QWidget):
         #data=results_file.read()
         #print (data)
         #Set the text box to display results
+        self.resultsTextEditBox.setText("") #Clear previous results
         for key in self.mydict.keys():
             self.resultsTextEditBox.setText( key + " " + str(self.mydict[key].confidence)+ "\n" + self.resultsTextEditBox.toPlainText() )
 
