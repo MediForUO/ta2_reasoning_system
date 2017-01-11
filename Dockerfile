@@ -50,4 +50,3 @@ ENV HOME /home/developer
 ADD . .
 
 WORKDIR .
-CMD ["python3", "MediForUI.py"] 
