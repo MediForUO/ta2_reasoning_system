@@ -1,0 +1,13 @@
+Instrucions for using the reasoning system version included in this tarbell. 
+
+After unpacking this file add the 'exp_pt1' and 'NC2016_Test0613' files to the directory. These folders can be found on the Google Drive I (Robert M.) invited you to.
+
+To test an image, run the UI using 'python3 MediForUI.py'.
+
+Once the UI is running, select the probe image from the NC2016_Test0613/probe folder (take note of the 4 digit number following the underscore (this is used to find the algorithm heatmaps.)
+
+For each algorithm, select the heatmap from the folder exp_pt1/<algorithm_name>/mask/<image_name>.
+
+Selecting algorithm scores requires opening the refence files in the directory exp_pt1/<algorithm_name>/ and searching for the query image by its probe_id.
+
+At this point 'run inference' can be called.
